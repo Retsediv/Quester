@@ -18,16 +18,26 @@
 </head>
 <body>
 
-<nav class="grey blue-grey darken-1">
-    <div class="container">
-    <div class="nav-wrapper">
-        <a href="#" class="brand-logo">Logo</a>
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="#">Link</a></li>
-            <li><a href="#">Link 1</a></li>
-            <li><a href="#">Link 2</a></li>
+<nav class="white header">
+    <div class="nav-wrapper container">
+        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+        <div class="row">
+            <div class="s12 logo-container">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Quester logo" class="logo">
+            </div>
+            <ul id="" class="right s6">
+                <li><a href="/">Головна</a></li>
+                <li><a href="#">Про нас</a></li>
+                <li><a href="#">Контакти</a></li>
+            </ul>
+        </div>
+
+        <ul class="side-nav" id="mobile-demo">
+            <li><a href="sass.html">Sass</a></li>
+            <li><a href="badges.html">Components</a></li>
+            <li><a href="collapsible.html">Javascript</a></li>
+            <li><a href="mobile.html">Mobile</a></li>
         </ul>
-    </div>
     </div>
 </nav>
 

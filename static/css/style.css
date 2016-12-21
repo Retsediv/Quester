@@ -1,5 +1,62 @@
+.header {
+    min-height: 100px;
+    box-shadow: none;
+}
+
+.header a {
+    color: #424242;
+}
+
+.header ul a {
+    padding: 0 20px;
+    font-size: 1.2rem;
+    transition: background-color .4s, color .4s;
+}
+
+.header ul a:hover {
+    background-color: #26a69a;
+    color: white;
+    border-bottom: 4px solid #00897b;
+}
+
+.button-collapse {
+    position: absolute;
+}
+
+.header .logo {
+    width: 230px;
+}
+
+.logo-container {
+    display: inline-block;
+}
+
+a.button-collapse {
+    display: none;
+}
+
+@media only screen and (max-width: 600px) {
+    .logo-container {
+        width: 100%;
+    }
+
+    .logo-container img {
+        margin: 0 auto;
+        display: block;
+    }
+
+    a.button-collapse {
+        display: block;
+        position: absolute;
+    }
+}
+
 @media only screen and (min-width: 993px) {
     .container {
         width: 80%;
     }
+}
+
+.wrapper {
+    margin-top: 40px;
 }

@@ -1,6 +1,7 @@
 .header {
     min-height: 100px;
     box-shadow: none;
+    padding: 5px 0;
 }
 
 .header a {
@@ -57,6 +58,13 @@ a.button-collapse {
     }
 }
 
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
 .wrapper {
     margin-top: 40px;
+    flex: 1 0 auto;
 }

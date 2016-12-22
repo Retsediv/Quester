@@ -1,27 +1,23 @@
 <div class="col m4 l3 hide-on-small-only">
     <div class="collection sidebar">
-        <a href="#!" class="collection-item"><span class="new badge">4</span>Alan</a>
-        <a href="#!" class="collection-item"><span class="badge">14</span>Alan</a>
-        <a href="#modal1" class="collection-item">Зареєструватись</a>
+        <a href="#!" class="collection-item">Профіль</a>
+        <a href="#!" class="collection-item">Мої квести</a>
+        <a href="#!" class="collection-item">Галарея</a>
         {% if current_user.is_authenticated %}
-            <a class="collection-header">Hi, {{ current_user.nickname }}!</a>
             <a href="{{ url_for('logout') }}" class="collection-item">Вийти</a>
         {% else %}
-            <a class="collection-header">I don't know you!</a>
-            <a href="{{ url_for('oauth_authorize', provider='facebook') }}" class="collection-item">Увійти через Facebook</a>
-            <a href="{{ url_for('oauth_authorize', provider='twitter') }}" class="collection-item">Увійти через Twitter</a>
-
+            <a href="#register" class="collection-item">Увійти</a>
         {% endif %}
     </div>
-
-    {% for message in get_flashed_messages() %}
-        <p><b>Error</b>: {{ message }}</p>
-    {% endfor %}
 </div>
 
 <ul class="collection side-nav" id="sidebar">
-    <a href="#!" class="collection-item"><span class="new badge">4</span>Alan</a>
-    <a href="#!" class="collection-item"><span class="badge">14</span>Alan</a>
-    <a href="#!" class="collection-item">Зареєструватись</a>
-    <a href="#!" class="collection-item">Увійти</a>
+    <a href="#!" class="collection-item">Профіль</a>
+        <a href="#!" class="collection-item">Мої квести</a>
+        <a href="#!" class="collection-item">Галарея</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('logout') }}" class="collection-item">Вийти</a>
+        {% else %}
+            <a href="#register" class="collection-item">Увійти</a>
+        {% endif %}
 </ul>

@@ -1,10 +1,18 @@
 <!-- Modal Structure -->
-<div id="modal1" class="modal">
+<div id="register" class="modal register-modal">
     <div class="modal-content">
-        <h4>Modal Header</h4>
-        <p>A bunch of text</p>
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+        <h4>Увійдіть на сайт</h4>
+        <div class="row">
+            <div class="col sm12 m6 l6">
+                <a href="{{ url_for('oauth_authorize', provider='facebook') }}" class="collection-item">
+                    <img src="{{ url_for('static', filename='img/fb.png') }}" alt="">
+                </a>
+            </div>
+            <div class="col sm12 m6 l6">
+                <a href="{{ url_for('oauth_authorize', provider='twitter') }}" class="collection-item">
+                    <img src="{{ url_for('static', filename='img/twitter.png') }}" alt="">
+                </a>
+            </div>
+        </div>
     </div>
 </div>

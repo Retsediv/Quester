@@ -42,4 +42,7 @@
     </div>
 </nav>
 
+{% for message in get_flashed_messages() %}
+    <p><b>Error</b>: {{ message }}</p>
+{% endfor %}
 {% block body %} {% endblock %}

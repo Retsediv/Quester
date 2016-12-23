@@ -2,12 +2,14 @@ from flask import Flask, redirect, url_for, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from sqlalchemy import *
-
 from oauth import OAuthSignIn
 
 app = Flask(__name__)
+db = SQLAlchemy(app)
+lm = LoginManager(app)
+lm.login_view = 'index'
 app.config['SECRET_KEY'] = 'top secret!'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///quester.db'
 app.config['OAUTH_CREDENTIALS'] = {
     'facebook': {
         'id': '1063270763802788',
@@ -19,10 +21,6 @@ app.config['OAUTH_CREDENTIALS'] = {
     }
 }
 
-db = SQLAlchemy(app)
-lm = LoginManager(app)
-lm.login_view = 'index'
-
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -30,6 +28,7 @@ class User(UserMixin, db.Model):
     social_id = db.Column(db.String(64), nullable=False, unique=True)
     nickname = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=True)
+    img = db.Column(db.String(256), nullable=True)
 
 
 @lm.user_loader
@@ -45,6 +44,11 @@ def index():
 @app.route('/contact')
 def contact():
     return render_template("contact.html")
+
+
+@app.route('/news/<id>')
+def news(id):
+    print(id)
 
 
 @app.route('/logout')
@@ -66,13 +70,13 @@ def oauth_callback(provider):
     if not current_user.is_anonymous:
         return redirect(url_for('index'))
     oauth = OAuthSignIn.get_provider(provider)
-    social_id, username, email = oauth.callback()
+    social_id, username, email, img = oauth.callback()
     if social_id is None:
         flash('Authentication failed.')
         return redirect(url_for('index'))
     user = User.query.filter_by(social_id=social_id).first()
     if not user:
-        user = User(social_id=social_id, nickname=username, email=email)
+        user = User(social_id=social_id, nickname=username, email=email, img=img)
         db.session.add(user)
         db.session.commit()
     login_user(user, True)
@@ -82,6 +86,7 @@ def oauth_callback(provider):
 @app.route("/about")
 def about():
     return render_template("about.html")
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,8 +1,9 @@
 {% extends "parent.html" %}
 
 {% block body %}
-    <h2>Hello</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam consectetur consequuntur dicta, dolor doloribus eaque error esse facere laborum nemo, non qui reiciendis repellat reprehenderit sapiente sed temporibus unde voluptatem.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam consectetur consequuntur dicta, dolor doloribus eaque error esse facere laborum nemo, non qui reiciendis repellat reprehenderit sapiente sed temporibus unde voluptatem.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam consectetur consequuntur dicta, dolor doloribus eaque error esse facere laborum nemo, non qui reiciendis repellat reprehenderit sapiente sed temporibus unde voluptatem.</p>
+    {% if current_user.is_authenticated %}
+        Сторінка профілю
+    {% else %}
+        Щось, коли ти ще не залогінився
+    {% endif %}
 {% endblock %}

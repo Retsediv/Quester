@@ -1,15 +1,26 @@
 <div class="col m4 l3 hide-on-small-only">
     <div class="collection sidebar">
-        <a href="#!" class="collection-item"><span class="new badge">4</span>Alan</a>
-        <a href="#!" class="collection-item"><span class="badge">14</span>Alan</a>
-        <a href="#!" class="collection-item">Зареєструватись</a>
-        <a href="#!" class="collection-item">Увійти</a>
+        {% if current_user.is_authenticated %}
+            <div class="collection-item">
+                <img src="{{ current_user.img }}" alt="" class="responsive-img">
+            </div>
+            <a href="#!" class="collection-item">Профіль</a>
+            <a href="#!" class="collection-item">Мої квести</a>
+            <a href="#!" class="collection-item">Галарея</a>
+            <a href="{{ url_for('logout') }}" class="collection-item">Вийти</a>
+        {% else %}
+            <a href="#register" class="collection-item active">Увійти</a>
+        {% endif %}
     </div>
 </div>
 
 <ul class="collection side-nav" id="sidebar">
-    <a href="#!" class="collection-item"><span class="new badge">4</span>Alan</a>
-    <a href="#!" class="collection-item"><span class="badge">14</span>Alan</a>
-    <a href="#!" class="collection-item">Зареєструватись</a>
-    <a href="#!" class="collection-item">Увійти</a>
+    <a href="#!" class="collection-item">Профіль</a>
+    <a href="#!" class="collection-item">Мої квести</a>
+    <a href="#!" class="collection-item">Галарея</a>
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('logout') }}" class="collection-item">Вийти</a>
+    {% else %}
+        <a href="#register" class="collection-item">Увійти</a>
+    {% endif %}
 </ul>

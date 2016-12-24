@@ -29,6 +29,20 @@ class User(UserMixin, db.Model):
     nickname = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=True)
     img = db.Column(db.String(256), nullable=True)
+    quests = db.relationship('Quest')
+
+
+class Quest(UserMixin, db.Model):
+    __tablename__ = "quests"
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(64), nullable=False)
+    transport = db.Column(db.String(64), nullable=False)
+    map_url = db.Column(db.Text, nullable=False)
+    dots = db.Column(db.JSON, nullable=False)
+    pictures = db.Column(db.JSON, nullable=True)
+    done = db.Column(db.Boolean, nullable=True, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
 
 
 @lm.user_loader

@@ -58,6 +58,20 @@ a.button-collapse {
     }
 }
 
+.register-modal img{
+    width: 192px;
+    display: block;
+    margin: 0 auto;
+}
+
+.quest-btn, .full-width-btn {
+    width: 100%;
+    display: block;
+}
+
+.map {
+    min-height: 300px !important;
+}
 body {
     display: flex;
     min-height: 100vh;

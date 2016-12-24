@@ -1,0 +1,46 @@
+<!-- Modal Structure -->
+<div id="quest" class="modal register-modal">
+    <div class="modal-content">
+        <h4 class="teal-text darken-4">Генерація квесту</h4>
+        <div class="row">
+            <form action="#">
+                <div class="divider"></div>
+                <div class="col sm12 m6 l6">
+                    <p>Тип квесту:</p>
+                    <p>
+                        <input name="quest_type" type="radio" id="quest_type_sport" value="sport"/>
+                        <label for="quest_type_sport">Спортивний</label>
+                    </p>
+                    <p>
+                        <input name="quest_type" type="radio" id="quest_type_culture" value="culture"/>
+                        <label for="quest_type_culture">Культурний</label>
+                    </p>
+                </div>
+                <div class="col sm12 m6 l6">
+                    <p>Як ви будете пересуватись?</p>
+                    <p>
+                        <input name="quest_transport" type="radio" id="quest_transport_foot" value="foot"/>
+                        <label for="quest_transport_foot">Пішки</label>
+                    </p>
+                    <p>
+                        <input name="quest_transport" type="radio" id="quest_transport_bicycle" value="bicycle"/>
+                        <label for="quest_transport_bicycle">Велосипедом</label>
+                    </p>
+                </div>
+
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">my_locationx</i>
+                    <input id="street" type="text" class="validate" name="street">
+                    <label for="street">Вулиця, з якої ви будете стартувати</label>
+                </div>
+
+                <br>
+                <button class="btn waves-effect waves-light full-width-btn" type="submit" name="action">Вперед!
+                    <i class="material-icons right">send</i>
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>

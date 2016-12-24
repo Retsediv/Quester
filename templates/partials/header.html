@@ -28,7 +28,7 @@
             <ul id="" class="right s6">
                 <li><a href="{{ url_for('index') }}">Головна</a></li>
                 <li><a href="{{ url_for('about') }}">Про нас</a></li>
-                <li><a href="{{ url_for('contact') }}">Контакти</a></li>
+                <li><a href="{{ url_for('contact') }}">Зворотній зв'язок</a></li>
             </ul>
         </div>
 
@@ -42,4 +42,7 @@
     </div>
 </nav>
 
+{% for message in get_flashed_messages() %}
+    <p><b>Error</b>: {{ message }}</p>
+{% endfor %}
 {% block body %} {% endblock %}

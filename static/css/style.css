@@ -64,7 +64,7 @@ a.button-collapse {
     margin: 0 auto;
 }
 
-.quest-btn {
+.quest-btn, .full-width-btn {
     width: 100%;
     display: block;
 }

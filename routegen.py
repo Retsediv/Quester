@@ -19,6 +19,8 @@ class Route(object):
             :return iscorrect:bool
             '''
             from urllib.request import urlopen
+            global maxlen
+            global minlen
             url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints={2}&mode={3}&units=metric&key={4}'.format(
                 way[0], way[-1], '%7C'.join(way[1:-1]), mode, APIkey)
             response = urlopen(url)
@@ -33,31 +35,36 @@ class Route(object):
                     break
             return iscorrent
 
-        def get_waypoints(curr_location, mode):
+        def convert_waypoint(waypoint):
+            '''
+            Convert waypoint to appropriate look
+            Example of inappropriate look: ['lat:49.8272336', 'long:24.052561']
+            Example of appropriate look: '40.71265260000001%2C-74.0065973'
+
+            :param waypoint:list of str unformated
+            :return waypoint:str formated
+            '''
+            return waypoint[0][4:] + '$2C' + waypoint[1][5:]
+
+        def get_waypoints():
             '''
             Read database with all possible waypoints
             Return waypoints in determined area based on travelling mode
 
             :param curr_location:str
-            :param mode:str
             :return waypoints:list of str
             '''
+            waypoints = []
 
-            def convert_waypoint(waypoint):
-                '''
-                Convert waypoint to appropriate look
-                Example of appropriate look: '40.71265260000001%2C-74.0065973'
-
-                :param waypoint:str unformated
-                :return waypoint:str formated
-                '''
-                pass
-
-            pass
+            data_file = open('dots\\all_cult.txt', encoding='utf-8', errors='ignore')
+            for line in data_file:
+                line = line.strip().split(', ')[-2:]
+                waypoints.append(convert_waypoint(line))
+            data_file.close()
+            return waypoints
 
         from random import choice, randint
-        from urllib.request import urlopen
-        waypoints = get_waypoints(curr_location, mode)
+        waypoints = get_waypoints()
         while True:
             way = [curr_location]
             waypointscpy = waypoints[:]

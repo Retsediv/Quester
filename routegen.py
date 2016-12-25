@@ -17,7 +17,6 @@ class Route:
             Check if length of given way is between maxlen and minlen
 
             :param way:list of str
-            :param mode:str
             :return iscorrect:bool
             '''
             from urllib.request import urlopen
@@ -26,8 +25,10 @@ class Route:
             url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints={2}&mode={3}&units=metric&key={4}'.format(
                 way[0], way[-1], '%7C'.join(way[1:-1]), travelling_mode, APIkey)
             response = urlopen(url)
+            iscorrent = False
             for line in response:
                 data = response.readline().strip()
+                print(data)
                 if data.startswith(b'"value"'):
                     length = int(data[10:])
                     if (length < maxlen and length > minlen):
@@ -74,12 +75,11 @@ class Route:
                 point = choice(waypointscpy)
                 way.append(point)
                 waypointscpy.remove(point)
-
+            self.way = way
+            for i in range(len(way)):
+                way[i] = convert_waypoint(way[i].split(', ')[-2:])
             if (check_length(way)):
                 break
-        self.way = way
-        for i in range(len(way)):
-            way[i] = convert_waypoint(way[i].split(', ')[-2:])
 
         global APIkey
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(

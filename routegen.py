@@ -34,14 +34,11 @@ class Route:
                 raise ValueError('Wrong travelling_mode!')
             url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&mode={2}&units=metric&key={3}'.format(
                 way[0], way[-1], travelling_mode, APIkey)
-            for w in way:
-                print(w)
             print(url)
             response = urlopen(url)
             iscorrent = False
             for line in response:
                 data = response.readline().strip()
-                print(data)
                 if data.startswith(b'"value"'):
                     length = int(data[10:])
                     if (length < (maxlen / point_num) and length > (minlen / point_num)):
@@ -88,12 +85,10 @@ class Route:
             print(url)
             f = urlopen(url)
             for line in f:
-                print(line)
                 if (line.strip().startswith(b'"lat"')):
                     break
             location = line.split()[-1].strip()
             for line in f:
-                print(line)
                 if (line.strip().startswith(b'"lng"')):
                     break
             location += line.split()[-1].strip()
@@ -108,6 +103,7 @@ class Route:
         self.way = [(self.way, curr_location)]
         way = [curr_location]
         point_num = randint(3, 6)
+        print(point_num)
         for i in range(point_num):
             while True:
                 point = choice(waypoints)

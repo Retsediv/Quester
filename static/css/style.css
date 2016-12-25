@@ -69,6 +69,13 @@ a.button-collapse {
     display: block;
 }
 
+.quest_map {
+    width: 100% !important;
+    min-height: 350px !important;
+    max-height: 500px !important;
+    border: 0 !important;
+}
+
 .map {
     min-height: 300px !important;
 }

@@ -42,14 +42,23 @@ class Quest(UserMixin, db.Model):
     type = db.Column(db.String(64), nullable=False)
     transport = db.Column(db.String(64), nullable=False)
     map_url = db.Column(db.Text, nullable=False)
-    dots = db.Column(db.Text, nullable=False)
-    pictures = db.Column(db.Text, nullable=False)
     done = db.Column(db.Boolean, nullable=True, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    dots = db.relationship('Dot')
+
+
+class Dot(UserMixin, db.Model):
+    __tablename__ = "dots"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), nullable=False)
+    coor = db.Column(db.String(256), nullable=False)
+    picture = db.Column(db.Text, nullable=True)
+    quest_id = db.Column(db.Integer, db.ForeignKey('quests.id'))
 
 
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Quest, db.session))
+admin.add_view(ModelView(Dot, db.session))
 
 
 @lm.user_loader
@@ -59,7 +68,16 @@ def load_user(id):
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    if current_user.is_authenticated:
+        quests = current_user.quests
+        # quests = Quest.query.filter(user_id=current_user.id).all()
+        can_new = True
+        for q in quests:
+            if not q.done:
+                can_new = False
+                break
+
+        return render_template("index.html", quests=quests, can_new=can_new)
 
 
 @app.route('/contact')
@@ -79,8 +97,21 @@ def make_quest():
     transport = request.form.get('quest_transport')
     start_street = request.form.get('street')
 
-    map_url = Route(start_street, type, transport)
-    return map_url
+    # map_url = Route(start_street, type, transport).route
+    # dots = Route(start_street, type, transport).dots
+    map_url = 'https://www.google.com/maps/embed/v1/directions?origin=49.834535,24.0181279&destination=49.841266,24.0646835&waypoints=49.84023999999999,24.033825|49.8341096,24.0297615|49.8155835,24.0372175|49.834257,24.009316|49.8387215,23.882707&mode=walking&key=AIzaSyB-cMjd8cn3CGD1btd1LVdRQodlYZWE7ZQ'
+    dots = [['Козельницька 2а', '49.33332,24.3333'], ['Городоцька', '46.3453,22.32423']]
+    # add quest to db
+    quest = Quest(type=type, transport=transport, map_url=map_url, user_id=current_user.id)
+    db.session.add(quest)
+    db.session.commit()
+
+    for dot in dots:
+        new_dot = Dot(name=dot[0], coor=dot[1], quest_id=quest.id)
+        db.session.add(new_dot)
+        db.session.commit()
+
+    return redirect('/')
     # return type + " " + transport + " " + start_street
 
 

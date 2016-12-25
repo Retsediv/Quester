@@ -1,4 +1,4 @@
-APIkey = 'AIzaSyBIn95T_n1eDaA1oeF_3uzy30VB8G0-OX0'
+APIkey = 'AIzaSyB-cMjd8cn3CGD1btd1LVdRQodlYZWE7ZQ'
 # length in meters
 maxlen = 6000
 minlen = 2000
@@ -12,7 +12,7 @@ class Route:
     '''
 
     def __init__(self, curr_location, quest_mode, travelling_mode):
-        def check_length(way):
+        def check_length(way, point_num):
             '''
             Check if length of given way is between maxlen and minlen
 
@@ -22,8 +22,11 @@ class Route:
             from urllib.request import urlopen
             global maxlen
             global minlen
-            url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints={2}&mode={3}&units=metric&key={4}'.format(
-                way[0], way[-1], '%7C'.join(way[1:-1]), travelling_mode, APIkey)
+            url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&mode={2}&units=metric&key={3}'.format(
+                way[0], way[-1], travelling_mode, APIkey)
+            for w in way:
+                print(w)
+            print(url)
             response = urlopen(url)
             iscorrent = False
             for line in response:
@@ -31,7 +34,7 @@ class Route:
                 print(data)
                 if data.startswith(b'"value"'):
                     length = int(data[10:])
-                    if (length < maxlen and length > minlen):
+                    if (length < maxlen / point_num and length > minlen / point_num):
                         iscorrent = True
                     else:
                         iscorrent = False
@@ -47,7 +50,7 @@ class Route:
             :param waypoint:list of str unformated
             :return waypoint:str formated
             '''
-            return waypoint[0][4:] + '$2C' + waypoint[1][5:]
+            return waypoint[0][4:] + ',' + waypoint[1][5:]
 
         def get_waypoints():
             '''
@@ -64,25 +67,28 @@ class Route:
             data_file = open('dots\\all_cult.txt', encoding='utf-8', errors='ignore')
             for line in data_file:
                 line = line.strip()
-                waypoints.append(line)
+                waypoints.append(line.split(', '))
             data_file.close()
             return waypoints
 
         from random import choice, randint
         waypoints = get_waypoints()
-        while True:
-            way = [curr_location]
-            waypointscpy = waypoints[:]
-            for i in range(randint(3, 9)):
-                point = choice(waypointscpy)
-                way.append(point)
-                waypointscpy.remove(point)
-            self.way = way
-            for i in range(len(way)):
-                way[i] = convert_waypoint(way[i].split(', ')[-2:])
-            if (check_length(way)):
-                break
+        way = [curr_location]
+        point_num = randint(3, 6)
+        for i in range(point_num):
+            while True:
+                point = choice(waypoints)
+                if (check_length([way[-1], convert_waypoint(point[-2:])], point_num)):
+                    way.append(convert_waypoint(point[-2:]))
+                    break
+            waypoints.remove(point)
 
         global APIkey
+        self.way = way
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
-            way[0], way[-1], '%7C'.join(way[1:-1]), travelling_mode, APIkey)
+            way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)
+
+
+def way(way):
+    return 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
+        way[0], way[-1], '|'.join(way[1:-1]), 'walking', APIkey)

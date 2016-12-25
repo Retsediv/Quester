@@ -71,8 +71,23 @@ class Route:
             data_file.close()
             return waypoints
 
+        def geocode(location):
+            from urllib.request import urlopen
+            location = location + '+Lviv,+lviv+oblast'
+            url = 'https://maps.googleapis.com/maps/api/geocode/json?address={}&key={}'.format(location, APIkey)
+            f = urlopen(url)
+            for line in f:
+                data = f.readline()
+                if (data.strip().startwith('"location"')):
+                    break
+            data = f.readline().strip()
+            location = data.split(':')[-1].strip()[:-1]
+            location += ',' + f.readline().strip().split()[-1].strip()
+            return str(location)[2:-1]
+
         from random import choice, randint
         waypoints = get_waypoints()
+        curr_location = geocode(curr_location)
         way = [curr_location]
         point_num = randint(3, 6)
         for i in range(point_num):
@@ -88,7 +103,3 @@ class Route:
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
             way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)
 
-
-def way(way):
-    return 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
-        way[0], way[-1], '|'.join(way[1:-1]), 'walking', APIkey)

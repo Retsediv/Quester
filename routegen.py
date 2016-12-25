@@ -89,6 +89,7 @@ class Route:
             f = urlopen(url)
             for line in f:
                 data = f.readline()
+                print(data)
                 if (data.strip().startswith(b'"location"')):
                     break
             data = f.readline().strip()
@@ -99,10 +100,10 @@ class Route:
         from urllib.request import urlopen
         from random import choice, randint
         waypoints = get_waypoints()
-        self.way = [curr_location]
-        curr_location = geocode(curr_location)
-        self.way = [(self.way[0], curr_location)]
-        way = [curr_location]
+        # self.way = [curr_location]
+        # curr_location = geocode(curr_location)
+        self.way = [('UCU', '49.8171784,24.0229611')]
+        way = ['49.8171784,24.0229611']
         point_num = randint(3, 6)
         for i in range(point_num):
             while True:

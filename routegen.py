@@ -1,6 +1,6 @@
 APIkey = 'AIzaSyC1ZcZJ4jBfcg1Fm_qJtdY76AaxI-3ANjI'
 # length in meters
-glmaxlen = 6000
+glmaxlen = 3000
 glminlen = 200
 
 
@@ -44,7 +44,7 @@ class Route:
                 print(data)
                 if data.startswith(b'"value"'):
                     length = int(data[10:])
-                    if (length < maxlen / point_num and length > minlen / point_num):
+                    if (length < (maxlen / point_num) and length > (minlen / point_num)):
                         iscorrent = True
                     else:
                         iscorrent = False
@@ -106,7 +106,7 @@ class Route:
         curr_location = geocode(curr_location)
         print(curr_location, 'curr_location')
         self.way = [(self.way, curr_location)]
-        way = ['49.8171784,24.0229611']
+        way = [curr_location]
         point_num = randint(3, 6)
         for i in range(point_num):
             while True:

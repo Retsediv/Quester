@@ -3,15 +3,23 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from werkzeug.utils import secure_filename
 from sqlalchemy import *
+from os.path import join, dirname, realpath
 from oauth import OAuthSignIn
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
 admin = Admin(app)
 lm = LoginManager(app)
+
 lm.login_view = 'index'
+
+UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'uploads/dots/')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
 app.config['SECRET_KEY'] = 'top secret!'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///quester.db'
 app.config['OAUTH_CREDENTIALS'] = {
     'facebook': {
@@ -113,6 +121,39 @@ def make_quest():
 
     return redirect('/')
     # return type + " " + transport + " " + start_street
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/quest/dot/img', methods=['POST', 'GET'])
+def upload_pictures_for_dots():
+    import os
+    # update db
+    quest_id = request.form['quest_id']
+    quest = Quest.query.get(quest_id)
+    quest.done = True
+    db.session.add(quest)
+    db.session.commit()
+
+    for file in request.files.getlist("pict[]"):
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        for dot in quest.dots:
+            dot.picture = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            db.session.add(dot)
+            db.session.commit()
+
+    return redirect("/")
 
 
 # Authorize routes

@@ -4,14 +4,14 @@ maxlen = 6000
 minlen = 2000
 
 
-class Route(object):
+class Route:
     '''
     Route.route is an url representing google map with route
     Route.way is list of str, same str as in all_cult.txt
     Route.way[0] ia a current location, start
     '''
 
-    def __init__(self, curr_location, mode):
+    def __init__(self, curr_location, quest_mode, travelling_mode):
         def check_length(way):
             '''
             Check if length of given way is between maxlen and minlen
@@ -24,7 +24,7 @@ class Route(object):
             global maxlen
             global minlen
             url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints={2}&mode={3}&units=metric&key={4}'.format(
-                way[0], way[-1], '%7C'.join(way[1:-1]), mode, APIkey)
+                way[0], way[-1], '%7C'.join(way[1:-1]), travelling_mode, APIkey)
             response = urlopen(url)
             for line in response:
                 data = response.readline().strip()
@@ -83,4 +83,4 @@ class Route(object):
 
         global APIkey
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
-            way[0], way[-1], '%7C'.join(way[1:-1]), mode, APIkey)
+            way[0], way[-1], '%7C'.join(way[1:-1]), travelling_mode, APIkey)

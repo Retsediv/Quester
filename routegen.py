@@ -9,6 +9,7 @@ class Route:
     Route.route is an url representing google map with route
     Route.way is list of str, same str as in all_cult.txt
     Route.way[0] ia a current location, start
+    Route.length is length in meters
     quest_mode is 'sport' or 'cult'
     travelling_mode is 'walking' or 'bicycling'
     '''
@@ -21,7 +22,6 @@ class Route:
             :param way:list of str
             :return iscorrect:bool
             '''
-            from urllib.request import urlopen
             global glmaxlen
             global glminlen
             if (travelling_mode == 'walking'):
@@ -96,6 +96,7 @@ class Route:
             location += b',' + f.readline().strip().split()[-1].strip()
             return str(location)[2:-1]
 
+        from urllib.request import urlopen
         from random import choice, randint
         waypoints = get_waypoints()
         self.way = [curr_location]
@@ -114,6 +115,13 @@ class Route:
                         self.way.append((','.join(point[:-2]), waypoint))
                         break
             waypoints.remove(point)
+        url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints={2}&mode={3}&units=metric&key={4}'.format(
+            way[0], way[-1], '%7C'.join(way[1:-1]), travelling_mode, APIkey)
+        response = urlopen(url)
+        for line in response:
+            data = response.readline().strip()
+            if data.startswith(b'"value"'):
+                self.length = int(data[10:])
 
         global APIkey
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(

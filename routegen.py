@@ -1,7 +1,7 @@
 APIkey = 'AIzaSyC1ZcZJ4jBfcg1Fm_qJtdY76AaxI-3ANjI'
 # length in meters
 glmaxlen = 6000
-glminlen = 2000
+glminlen = 200
 
 
 class Route:
@@ -108,8 +108,8 @@ class Route:
             while True:
                 point = choice(waypoints)
                 waypoint = convert_waypoint(point[-2:])
-                if ((abs(waypoint.split(',')[0] - way[-1].split(',')[0]) < 0.02) and
-                        (abs(waypoint.split(',')[1] - way[-1].split(',')[1]) < 0.02)):
+                if ((abs(float(waypoint.split(',')[0]) - float(way[-1].split(',')[0])) < 0.02) and
+                        (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.02)):
                     if (check_length([way[-1], waypoint], point_num)):
                         way.append(waypoint)
                         self.way.append((','.join(point[:-2]), waypoint))
@@ -123,6 +123,5 @@ class Route:
             if data.startswith(b'"value"'):
                 self.length = int(data[10:])
 
-        global APIkey
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
             way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)

@@ -1,7 +1,7 @@
 APIkey = 'AIzaSyB-cMjd8cn3CGD1btd1LVdRQodlYZWE7ZQ'
 # length in meters
-maxlen = 6000
-minlen = 2000
+glmaxlen = 6000
+glminlen = 2000
 
 
 class Route:
@@ -9,6 +9,8 @@ class Route:
     Route.route is an url representing google map with route
     Route.way is list of str, same str as in all_cult.txt
     Route.way[0] ia a current location, start
+    quest_mode is 'sport' or 'cult'
+    travelling_mode is 'walking' or 'bicycling'
     '''
 
     def __init__(self, curr_location, quest_mode, travelling_mode):
@@ -20,8 +22,16 @@ class Route:
             :return iscorrect:bool
             '''
             from urllib.request import urlopen
-            global maxlen
-            global minlen
+            global glmaxlen
+            global glminlen
+            if (travelling_mode == 'walking'):
+                maxlen = glmaxlen
+                minlen = glminlen
+            elif (travelling_mode == 'bicycling'):
+                maxlen = glmaxlen * 2
+                minlen = glminlen * 2
+            else:
+                raise ValueError('Wrong travelling_mode!')
             url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&mode={2}&units=metric&key={3}'.format(
                 way[0], way[-1], travelling_mode, APIkey)
             for w in way:
@@ -64,7 +74,7 @@ class Route:
             import os
             os.chdir(os.path.dirname(__file__))
 
-            data_file = open('dots\\all_cult.txt', encoding='utf-8', errors='ignore')
+            data_file = open('dots\\all_' + quest_mode + '.txt', encoding='utf-8', errors='ignore')
             for line in data_file:
                 line = line.strip()
                 waypoints.append(line.split(', '))
@@ -102,4 +112,3 @@ class Route:
         self.way = way
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
             way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)
-

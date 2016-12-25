@@ -104,9 +104,12 @@ class Route:
         for i in range(point_num):
             while True:
                 point = choice(waypoints)
-                if (check_length([way[-1], convert_waypoint(point[-2:])], point_num)):
-                    way.append(convert_waypoint(point[-2:]))
-                    break
+                waypoint = convert_waypoint(point[-2:])
+                if ((abs(waypoint.split(',')[0] - way[-1].split(',')[0]) < 0.02) and
+                        (abs(waypoint.split(',')[1] - way[-1].split(',')[1]) < 0.02)):
+                    if (check_length([way[-1], waypoint], point_num)):
+                        way.append(waypoint)
+                        break
             waypoints.remove(point)
 
         global APIkey

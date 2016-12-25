@@ -52,7 +52,32 @@ def check_cult():
                                       str(r['results'][0]['geometry']['location']["lat"])
                                       + ', long:' + str(r['results'][0]['geometry']['location']["lng"])
                                       + '\n')
+            count += 1
+
+def spotr():
+    f1 = YD.sport_1()
+    f2 = YD.sport_2()
+    f3 = f1 + f2
+
+    MAP_KEY = "AIzaSyBtx5VxQTow7Nr4EpJYDZoAr2UDFm90NwE"
+    # AIzaSyC5QSu5wH9GXxsfwsSwRvENgkBqkVPvZVs
+
+    for el in f3:
+        url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + urllib.request.quote(el[1]) \
+              + '&types=geocode&key=' + MAP_KEY
+
+        r = urllib.request.urlopen(url)
+        r = json.loads(r.read().decode('utf-8'))
+
+        if r['status'] == 'ZERO_RESULTS':
+            pass
+        else:
+            with open('all_sport.txt', 'a') as output_file:
+                output_file.write(el[0] + ', ' + 'lat:' +
+                                  str(r['results'][0]['geometry']['location']["lat"])
+                                  + ', long:' + str(r['results'][0]['geometry']['location']["lng"])
+                                  + '\n')
 
 
-# AIzaSyBtx5VxQTow7Nr4EpJYDZoAr2UDFm90NwE
-# AIzaSyC5QSu5wH9GXxsfwsSwRvENgkBqkVPvZVs
+
+

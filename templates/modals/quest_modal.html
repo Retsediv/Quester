@@ -3,7 +3,7 @@
     <div class="modal-content">
         <h4 class="teal-text darken-4">Генерація квесту</h4>
         <div class="row">
-            <form action="#">
+            <form action="{{ url_for('make_quest') }}" method="post">
                 <div class="divider"></div>
                 <div class="col sm12 m6 l6">
                     <p>Тип квесту:</p>
@@ -19,12 +19,12 @@
                 <div class="col sm12 m6 l6">
                     <p>Як ви будете пересуватись?</p>
                     <p>
-                        <input name="quest_transport" type="radio" id="quest_transport_foot" value="foot"/>
-                        <label for="quest_transport_foot">Пішки</label>
+                        <input name="quest_transport" type="radio" id="quest_transport_walking" value="walking"/>
+                        <label for="quest_transport_walking">Пішки</label>
                     </p>
                     <p>
-                        <input name="quest_transport" type="radio" id="quest_transport_bicycle" value="bicycle"/>
-                        <label for="quest_transport_bicycle">Велосипедом</label>
+                        <input name="quest_transport" type="radio" id="quest_transport_bicycling" value="bicycling"/>
+                        <label for="quest_transport_bicycling">Велосипедом</label>
                     </p>
                 </div>
 

@@ -1,4 +1,4 @@
-APIkey = 'AIzaSyB-cMjd8cn3CGD1btd1LVdRQodlYZWE7ZQ'
+APIkey = 'AIzaSyC1ZcZJ4jBfcg1Fm_qJtdY76AaxI-3ANjI'
 # length in meters
 glmaxlen = 6000
 glminlen = 2000
@@ -98,18 +98,23 @@ class Route:
 
         from random import choice, randint
         waypoints = get_waypoints()
+        self.way = [curr_location]
         curr_location = geocode(curr_location)
+        self.way = [(self.way[0], curr_location)]
         way = [curr_location]
         point_num = randint(3, 6)
         for i in range(point_num):
             while True:
                 point = choice(waypoints)
-                if (check_length([way[-1], convert_waypoint(point[-2:])], point_num)):
-                    way.append(convert_waypoint(point[-2:]))
-                    break
+                waypoint = convert_waypoint(point[-2:])
+                if ((abs(waypoint.split(',')[0] - way[-1].split(',')[0]) < 0.02) and
+                        (abs(waypoint.split(',')[1] - way[-1].split(',')[1]) < 0.02)):
+                    if (check_length([way[-1], waypoint], point_num)):
+                        way.append(waypoint)
+                        self.way.append((','.join(point[:-2]), waypoint))
+                        break
             waypoints.remove(point)
 
         global APIkey
-        self.way = way
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
             way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)

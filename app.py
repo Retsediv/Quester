@@ -1,11 +1,14 @@
 from flask import Flask, redirect, url_for, render_template, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from sqlalchemy import *
 from oauth import OAuthSignIn
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
+admin = Admin(app)
 lm = LoginManager(app)
 lm.login_view = 'index'
 app.config['SECRET_KEY'] = 'top secret!'
@@ -43,6 +46,10 @@ class Quest(UserMixin, db.Model):
     pictures = db.Column(db.Text, nullable=False)
     done = db.Column(db.Boolean, nullable=True, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Quest, db.session))
 
 
 @lm.user_loader

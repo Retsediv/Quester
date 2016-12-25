@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, flash
+from flask import Flask, redirect, url_for, render_template, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from sqlalchemy import *
@@ -29,6 +29,7 @@ class User(UserMixin, db.Model):
     nickname = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=True)
     img = db.Column(db.String(256), nullable=True)
+    rating = db.Column(db.Integer, default=0)
     quests = db.relationship('Quest')
 
 
@@ -38,11 +39,10 @@ class Quest(UserMixin, db.Model):
     type = db.Column(db.String(64), nullable=False)
     transport = db.Column(db.String(64), nullable=False)
     map_url = db.Column(db.Text, nullable=False)
-    dots = db.Column(db.JSON, nullable=False)
-    pictures = db.Column(db.JSON, nullable=True)
+    dots = db.Column(db.Text, nullable=False)
+    pictures = db.Column(db.Text, nullable=False)
     done = db.Column(db.Boolean, nullable=True, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
 
 
 @lm.user_loader
@@ -60,11 +60,20 @@ def contact():
     return render_template("contact.html")
 
 
-@app.route('/news/<id>')
-def news(id):
-    print(id)
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 
+@app.route("/quest", methods=["POST"])
+def make_quest():
+    type = request.form.get('quest_type')
+    transport = request.form.get('quest_transport')
+    start_street = request.form.get('street')
+    return type + " " + transport + " " + start_street
+
+
+# Authorize routes
 @app.route('/logout')
 def logout():
     logout_user()
@@ -95,11 +104,6 @@ def oauth_callback(provider):
         db.session.commit()
     login_user(user, True)
     return redirect(url_for('index'))
-
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
 
 
 if __name__ == '__main__':

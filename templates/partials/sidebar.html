@@ -3,6 +3,7 @@
         {% if current_user.is_authenticated %}
             <div class="collection-item">
                 <img src="{{ current_user.img }}" alt="" class="responsive-img">
+                <div>Ваш рейтинг: {{ current_user.rating }}</div>
             </div>
             <a href="#!" class="collection-item">Профіль</a>
             <a href="#!" class="collection-item">Мої квести</a>

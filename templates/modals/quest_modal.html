@@ -3,7 +3,7 @@
     <div class="modal-content">
         <h4 class="teal-text darken-4">Генерація квесту</h4>
         <div class="row">
-            <form action="#">
+            <form action="{{ url_for('make_quest') }}" method="post">
                 <div class="divider"></div>
                 <div class="col sm12 m6 l6">
                     <p>Тип квесту:</p>

@@ -74,10 +74,14 @@ def about():
 
 @app.route("/quest", methods=["POST"])
 def make_quest():
+    from routegen import Route
     type = request.form.get('quest_type')
     transport = request.form.get('quest_transport')
     start_street = request.form.get('street')
-    return type + " " + transport + " " + start_street
+
+    map_url = Route(start_street, type, transport)
+    return map_url
+    # return type + " " + transport + " " + start_street
 
 
 # Authorize routes

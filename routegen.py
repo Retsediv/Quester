@@ -58,6 +58,8 @@ class Route:
             :return waypoints:list of str
             '''
             waypoints = []
+            import os
+            os.chdir(os.path.dirname(__file__))
 
             data_file = open('dots\\all_cult.txt', encoding='utf-8', errors='ignore')
             for line in data_file:

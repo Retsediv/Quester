@@ -74,7 +74,7 @@ class Route:
             import os
             os.chdir(os.path.dirname(__file__))
 
-            data_file = open('dots\\all_' + quest_mode + '.txt', encoding='utf-8', errors='ignore')
+            data_file = open('dots' + os.sep + 'all_' + quest_mode + '.txt', encoding='utf-8', errors='ignore')
             for line in data_file:
                 line = line.strip()
                 waypoints.append(line.split(', '))
@@ -83,16 +83,17 @@ class Route:
 
         def geocode(location):
             from urllib.request import urlopen
-            location = location + '+Lviv,+lviv+oblast'
+            location = '+'.join(location.split()) + '+Lviv,+lviv+oblast'
             url = 'https://maps.googleapis.com/maps/api/geocode/json?address={}&key={}'.format(location, APIkey)
+            print(url)
             f = urlopen(url)
             for line in f:
                 data = f.readline()
-                if (data.strip().startwith('"location"')):
+                if (data.strip().startswith(b'"location"')):
                     break
             data = f.readline().strip()
-            location = data.split(':')[-1].strip()[:-1]
-            location += ',' + f.readline().strip().split()[-1].strip()
+            location = data.split(b':')[-1].strip()[:-1]
+            location += b',' + f.readline().strip().split()[-1].strip()
             return str(location)[2:-1]
 
         from random import choice, randint

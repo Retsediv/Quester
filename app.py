@@ -86,6 +86,8 @@ def index():
                 break
 
         return render_template("index.html", quests=quests, can_new=can_new)
+    else:
+        return render_template("welcome.html")
 
 
 @app.route('/contact')

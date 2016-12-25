@@ -7,6 +7,8 @@ minlen = 2000
 class Route(object):
     '''
     Route.route is an url representing google map with route
+    Route.way is list of str, same str as in all_cult.txt
+    Route.way[0] ia a current location, start
     '''
 
     def __init__(self, curr_location, mode):
@@ -58,8 +60,8 @@ class Route(object):
 
             data_file = open('dots\\all_cult.txt', encoding='utf-8', errors='ignore')
             for line in data_file:
-                line = line.strip().split(', ')[-2:]
-                waypoints.append(convert_waypoint(line))
+                line = line.strip()
+                waypoints.append(line)
             data_file.close()
             return waypoints
 
@@ -75,6 +77,9 @@ class Route(object):
 
             if (check_length(way)):
                 break
+        self.way = way
+        for i in range(len(way)):
+            way[i] = convert_waypoint(way[i].split(', ')[-2:])
 
         global APIkey
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(

@@ -76,6 +76,10 @@ a.button-collapse {
     border: 0 !important;
 }
 
+.quest-image-btn input[type=file] {
+    position: relative;
+}
+
 .map {
     min-height: 300px !important;
 }

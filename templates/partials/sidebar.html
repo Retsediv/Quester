@@ -6,7 +6,6 @@
                 <div>Ваш рейтинг: {{ current_user.rating }}</div>
             </div>
             <a href="#!" class="collection-item">Профіль</a>
-            <a href="#!" class="collection-item">Мої квести</a>
             <a href="#!" class="collection-item">Галарея</a>
             <a href="{{ url_for('logout') }}" class="collection-item">Вийти</a>
         {% else %}
@@ -16,12 +15,15 @@
 </div>
 
 <ul class="collection side-nav" id="sidebar">
-    <a href="#!" class="collection-item">Профіль</a>
-    <a href="#!" class="collection-item">Мої квести</a>
-    <a href="#!" class="collection-item">Галарея</a>
     {% if current_user.is_authenticated %}
+        <div class="collection-item">
+            <img src="{{ current_user.img }}" alt="" class="responsive-img">
+            <div>Ваш рейтинг: {{ current_user.rating }}</div>
+        </div>
+        <a href="#!" class="collection-item">Профіль</a>
+        <a href="#!" class="collection-item">Галарея</a>
         <a href="{{ url_for('logout') }}" class="collection-item">Вийти</a>
     {% else %}
-        <a href="#register" class="collection-item">Увійти</a>
+        <a href="#register" class="collection-item active">Увійти</a>
     {% endif %}
 </ul>

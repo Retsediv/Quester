@@ -1,7 +1,7 @@
 APIkey = 'AIzaSyC1ZcZJ4jBfcg1Fm_qJtdY76AaxI-3ANjI'
 # length in meters
-glmaxlen = 6000
-glminlen = 2000
+glmaxlen = 10000
+glminlen = 500
 
 
 class Route:
@@ -34,21 +34,19 @@ class Route:
                 raise ValueError('Wrong travelling_mode!')
             url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&mode={2}&units=metric&key={3}'.format(
                 way[0], way[-1], travelling_mode, APIkey)
-            for w in way:
-                print(w)
             print(url)
             response = urlopen(url)
             iscorrent = False
+            length = 0
             for line in response:
-                data = response.readline().strip()
-                print(data)
-                if data.startswith(b'"value"'):
-                    length = int(data[10:])
-                    if (length < maxlen / point_num and length > minlen / point_num):
-                        iscorrent = True
-                    else:
-                        iscorrent = False
-                    break
+                line = line.strip()
+                if line.startswith(b'"distance"'):
+                    line = response.readline()
+                    line = response.readline().strip()
+                    length += int(line[10:])
+            if (length < (maxlen / point_num) and length > (minlen / point_num)):
+                iscorrent = True
+                self.length += length
             return iscorrent
 
         def convert_waypoint(waypoint):
@@ -82,47 +80,45 @@ class Route:
             return waypoints
 
         def geocode(location):
-            from urllib.request import urlopen
-            location = '+'.join(location.split()) + '+Lviv,+lviv+oblast'
+            from urllib.request import urlopen, quote
+            location = quote('вулиця ' + location + ', Львів, Львівська область')
             url = 'https://maps.googleapis.com/maps/api/geocode/json?address={}&key={}'.format(location, APIkey)
             print(url)
             f = urlopen(url)
             for line in f:
-                data = f.readline()
-                if (data.strip().startswith(b'"location"')):
+                if (line.strip().startswith(b'"lat"')):
                     break
-            data = f.readline().strip()
-            location = data.split(b':')[-1].strip()[:-1]
-            location += b',' + f.readline().strip().split()[-1].strip()
+            location = line.split()[-1].strip()
+            for line in f:
+                if (line.strip().startswith(b'"lng"')):
+                    break
+            location += line.split()[-1].strip()
             return str(location)[2:-1]
 
         from urllib.request import urlopen
         from random import choice, randint
+
         waypoints = get_waypoints()
         self.way = [curr_location]
         curr_location = geocode(curr_location)
         self.way = [(self.way[0], curr_location)]
+        self.length = 0
         way = [curr_location]
+
         point_num = randint(3, 6)
+        print(point_num)
         for i in range(point_num):
             while True:
                 point = choice(waypoints)
                 waypoint = convert_waypoint(point[-2:])
-                if ((abs(waypoint.split(',')[0] - way[-1].split(',')[0]) < 0.02) and
-                        (abs(waypoint.split(',')[1] - way[-1].split(',')[1]) < 0.02)):
+                if ((abs(float(waypoint.split(',')[0]) - float(way[-1].split(',')[0])) < 0.015) and
+                        (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.015)):
                     if (check_length([way[-1], waypoint], point_num)):
                         way.append(waypoint)
                         self.way.append((','.join(point[:-2]), waypoint))
                         break
             waypoints.remove(point)
-        url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints={2}&mode={3}&units=metric&key={4}'.format(
-            way[0], way[-1], '%7C'.join(way[1:-1]), travelling_mode, APIkey)
-        response = urlopen(url)
-        for line in response:
-            data = response.readline().strip()
-            if data.startswith(b'"value"'):
-                self.length = int(data[10:])
 
-        global APIkey
+        self.length /= 2
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
             way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)

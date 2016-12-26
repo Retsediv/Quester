@@ -1,60 +1,79 @@
 {% extends "parent.html" %}
 
 {% block body %}
-    {% if current_user.is_authenticated %}
-        {% if can_new %}
-            <a href="#quest" class="waves-effect waves-light btn quest-btn">Згенерувати квест<i
-                    class="material-icons right">done</i></a>
-            <div class="divider"></div>
-        {% endif %}
+    {% if can_new %}
+        <a href="#quest" class="waves-effect waves-light btn quest-btn">Згенерувати квест<i
+                class="material-icons right">done</i></a>
+        <div class="divider"></div>
+    {% endif %}
 
-        <div class="row">
-            <h5>Останні прийняті чи завершені квести</h5>
+    <div class="row">
+        <h5>Останні прийняті чи завершені квести</h5>
 
-            {% for quest in quests %}
-                <div class="col s12">
-                    <div class="card hoverable {% if quest.done %} grey lighten-4 {% endif %}">
-                        <div class="card-content">
-                            <span class="card-title">Назва квесту | 5.12 km</span>
-                            <iframe class="quest_map" width="600" height="450" frameborder="0" src="{{ quest.map_url }}"
+        {% for quest in quests %}
+            <div class="col s12">
+                <div class="card hoverable {% if quest.done %} grey lighten-4 {% endif %}">
+                    <div class="card-content">
+                        <span class="card-title">Квест | {{ quest.name }} km
+
+                            <img width="45" src="{% if quest.transport == 'walking' %} http://downloadicons.net/sites/default/files/baby18-77407.png {% else %} http://www.free-icons-download.net/images/bicycle-symbol-icon-47218.png {% endif %}"
+                                 class="responsive-img right" alt="">
+                            <img width="45" src="{% if quest.type == 'cult' %} https://d30y9cdsu7xlg0.cloudfront.net/png/13644-200.png {% else %} https://cdn0.iconfinder.com/data/icons/sports-android-l-lollipop-icon-pack/24/hand_biceps-512.png {% endif %}"
+                                 class="responsive-img right" alt="">
+
+                        </span>
+                        <div class="video-container">
+                            <iframe width="600" height="450" frameborder="0" src="{{ quest.map_url }}"
                                     allowfullscreen></iframe>
-                            {#                        {{ quest.type }}<br>#}
-                            {#                        {{ quest.transport }}#}
-
-                            <form action="#">
-                                <ul class="collection">
-                                    {% for dot in quest.dots %}
-                                        <li class="collection-item">{{ dot.name }}
-                                            <div class="file-field input-field">
-                                                <div class="btn">
-                                                    <span>File</span>
-                                                    <input type="file">
-                                                </div>
-                                                <div class="file-path-wrapper">
-                                                    <input class="file-path validate" type="text">
-                                                </div>
+                        </div>
+                    
+                        {% if not quest.done %}
+                            <form action="{{ url_for('upload_pictures_for_dots') }}" method="post"
+                                  enctype="multipart/form-data">
+                            <ul class="collection">
+                                <input class="file-path hidden" type="hidden" name="quest_id" value="{{ quest.id }}"/>
+                                {% for dot in quest.dots %}
+                                    <li class="collection-item">{{ dot.name }}
+                                        <div class="file-field input-field">
+                                            <div class="btn">
+                                                <span>Фотографія</span>
+                                                <input class="file-path hidden" type="text" name="dots[]"
+                                                       value="{{ dot.id }}"/>
+                                                <input type="file" name="pict[]"/>
                                             </div>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </form>
+                                            <div class="file-path-wrapper">
+                                                <input class="file-path validate" type="text">
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <div class="section row">
+                                {% for dot in quest.dots %}
+                                    <div class="col s12 m6 l6">
+                                        <img src="{{ url_for('static', filename='uploads/dots/' + dot.picture) }}"
+                                             class="responsive-img" alt="">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
-                        </div>
-                        <div class="card-action">
-                            {% if not quest.done %}
-                                <a class="waves-effect waves-light btn quest-btn">Завершити квест!<i
-                                        class="material-icons right">done</i></a>
-                            {% else %}
-                                <a class="waves-effect waves-light btn quest-btn disabled">Ви вже завершили цей квест<i
-                                        class="material-icons right">done</i></a>
-                            {% endif %}
-                        </div>
+                    </div>
+                    <div class="card-action">
+                        {% if not quest.done %}
+                            <button class="btn waves-effect waves-light quest-btn" type="submit" name="action">Завершити
+                                квест!
+                                <i class="material-icons right">send</i>
+                            </button>
+                            </form>
+                        {% else %}
+                            <a class="waves-effect waves-light btn quest-btn disabled">Ви вже завершили цей квест<i
+                                    class="material-icons right">done</i></a>
+                        {% endif %}
                     </div>
                 </div>
-            {% endfor %}
-        </div>
-
-    {% else %}
-        Щось, коли ти ще не залогінився
-    {% endif %}
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

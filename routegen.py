@@ -101,7 +101,7 @@ class Route:
         waypoints = get_waypoints()
         self.way = [curr_location]
         curr_location = geocode(curr_location)
-        self.way = [(self.way, curr_location)]
+        self.way = [(self.way[0], curr_location)]
         self.length = 0
         way = [curr_location]
 

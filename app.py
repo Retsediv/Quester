@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 from sqlalchemy import *
 from os.path import join, dirname, realpath
 from oauth import OAuthSignIn
+import os
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
@@ -15,7 +16,7 @@ lm = LoginManager(app)
 
 lm.login_view = 'index'
 
-UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/uploads/dots/')
+UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static' + os.sep + 'uploads' + os.sep + 'dots')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app.config['SECRET_KEY'] = 'top secret!'

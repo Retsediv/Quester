@@ -44,6 +44,8 @@ class Route:
                     line = response.readline()
                     line = response.readline().strip()
                     length += int(line[10:])
+            length /= 2
+            print(length)
             if (length < (maxlen / point_num) and length > (minlen / point_num)):
                 iscorrent = True
                 self.length += length
@@ -114,8 +116,8 @@ class Route:
                 point = choice(waypoints)
                 waypoint = convert_waypoint(point[-2:])
                 try:
-                    if ((abs(float(waypoint.split(',')[0]) - float(way[-1].split(',')[0])) < 0.03) and
-                            (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.03)):
+                    if ((abs(float(waypoint.split(',')[0]) - float(way[-1].split(',')[0])) < 0.01) and
+                            (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.01)):
                         if (check_length([way[-1], waypoint], point_num)):
                             way.append(waypoint)
                             self.way.append((','.join(point[:-2]), waypoint))
@@ -133,6 +135,5 @@ class Route:
             i += 1
             waypoints.remove(point)
 
-        self.length /= 2
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
             way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)

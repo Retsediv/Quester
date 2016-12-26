@@ -1,7 +1,7 @@
 APIkey = 'AIzaSyC1ZcZJ4jBfcg1Fm_qJtdY76AaxI-3ANjI'
 # length in meters
-glmaxlen = 30000
-glminlen = 200
+glmaxlen = 10000
+glminlen = 500
 
 
 class Route:
@@ -81,7 +81,7 @@ class Route:
 
         def geocode(location):
             from urllib.request import urlopen, quote
-            location = quote(location + 'Львів, Львівська область')
+            location = quote('вулиця ' + location + ', Львів, Львівська область')
             url = 'https://maps.googleapis.com/maps/api/geocode/json?address={}&key={}'.format(location, APIkey)
             print(url)
             f = urlopen(url)

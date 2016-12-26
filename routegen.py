@@ -1,6 +1,6 @@
 APIkey = 'AIzaSyC1ZcZJ4jBfcg1Fm_qJtdY76AaxI-3ANjI'
 # length in meters
-glmaxlen = 3000
+glmaxlen = 30000
 glminlen = 200
 
 
@@ -37,18 +37,16 @@ class Route:
             print(url)
             response = urlopen(url)
             iscorrent = False
+            length = 0
             for line in response:
                 line = line.strip()
                 if line.startswith(b'"distance"'):
                     line = response.readline()
                     line = response.readline().strip()
-                    length = int(line[10:])
-                    if (length < (maxlen / point_num) and length > (minlen / point_num)):
-                        iscorrent = True
-                        self.length += length
-                    else:
-                        iscorrent = False
-                    break
+                    length += int(line[10:])
+            if (length < (maxlen / point_num) and length > (minlen / point_num)):
+                iscorrent = True
+                self.length += length
             return iscorrent
 
         def convert_waypoint(waypoint):
@@ -82,8 +80,8 @@ class Route:
             return waypoints
 
         def geocode(location):
-            from urllib.request import urlopen
-            location = '+'.join(location.split()) + '+Lviv,+lviv+oblast'
+            from urllib.request import urlopen, quote
+            location = quote(location + 'Львів, Львівська область')
             url = 'https://maps.googleapis.com/maps/api/geocode/json?address={}&key={}'.format(location, APIkey)
             print(url)
             f = urlopen(url)
@@ -104,7 +102,7 @@ class Route:
         self.way = [curr_location]
         curr_location = geocode(curr_location)
         self.way = [(self.way, curr_location)]
-        self.length = 0.0
+        self.length = 0
         way = [curr_location]
 
         point_num = randint(3, 6)
@@ -121,5 +119,6 @@ class Route:
                         break
             waypoints.remove(point)
 
+        self.length /= 2
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
             way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)

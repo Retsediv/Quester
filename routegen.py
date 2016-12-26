@@ -113,8 +113,14 @@ class Route:
             while True:
                 point = choice(waypoints)
                 waypoint = convert_waypoint(point[-2:])
-                if ((abs(float(waypoint.split(',')[0]) - float(way[-1].split(',')[0])) < 0.03) and
-                        (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.03)):
+                try:
+                    if ((abs(float(waypoint.split(',')[0]) - float(way[-1].split(',')[0])) < 0.03) and
+                            (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.03)):
+                        if (check_length([way[-1], waypoint], point_num)):
+                            way.append(waypoint)
+                            self.way.append((','.join(point[:-2]), waypoint))
+                            break
+                except IndexError:
                     if (check_length([way[-1], waypoint], point_num)):
                         way.append(waypoint)
                         self.way.append((','.join(point[:-2]), waypoint))

@@ -15,7 +15,7 @@ lm = LoginManager(app)
 
 lm.login_view = 'index'
 
-UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'uploads/dots/')
+UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/uploads/dots/')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app.config['SECRET_KEY'] = 'top secret!'
@@ -47,6 +47,7 @@ class User(UserMixin, db.Model):
 class Quest(UserMixin, db.Model):
     __tablename__ = "quests"
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False)
     type = db.Column(db.String(64), nullable=False)
     transport = db.Column(db.String(64), nullable=False)
     map_url = db.Column(db.Text, nullable=False)
@@ -58,7 +59,7 @@ class Quest(UserMixin, db.Model):
 class Dot(UserMixin, db.Model):
     __tablename__ = "dots"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=True, default="Точка")
     coor = db.Column(db.String(256), nullable=False)
     picture = db.Column(db.Text, nullable=True)
     quest_id = db.Column(db.Integer, db.ForeignKey('quests.id'))
@@ -107,17 +108,23 @@ def make_quest():
     transport = request.form.get('quest_transport')
     start_street = request.form.get('street')
 
-    # map_url = Route(start_street, type, transport).route
-    # dots = Route(start_street, type, transport).dots
-    map_url = 'https://www.google.com/maps/embed/v1/directions?origin=49.834535,24.0181279&destination=49.841266,24.0646835&waypoints=49.84023999999999,24.033825|49.8341096,24.0297615|49.8155835,24.0372175|49.834257,24.009316|49.8387215,23.882707&mode=walking&key=AIzaSyB-cMjd8cn3CGD1btd1LVdRQodlYZWE7ZQ'
-    dots = [['Козельницька 2а', '49.33332,24.3333'], ['Городоцька', '46.3453,22.32423']]
+    route = Route(start_street, type, transport)
+    map_url = route.route
+    dots = route.way
+    length = route.length
+    # map_url = 'https://www.google.com/maps/embed/v1/directions?origin=49.834535,24.0181279&destination=49.841266,24.0646835&waypoints=49.84023999999999,24.033825|49.8341096,24.0297615|49.8155835,24.0372175|49.834257,24.009316|49.8387215,23.882707&mode=walking&key=AIzaSyB-cMjd8cn3CGD1btd1LVdRQodlYZWE7ZQ'
+    # dots = [['Козельницька 2а', '49.33332,24.3333'], ['Городоцька', '46.3453,22.32423']]
     # add quest to db
-    quest = Quest(type=type, transport=transport, map_url=map_url, user_id=current_user.id)
+    quest = Quest(name=str(length), type=type, transport=transport, map_url=map_url, user_id=current_user.id)
     db.session.add(quest)
     db.session.commit()
 
     for dot in dots:
-        new_dot = Dot(name=dot[0], coor=dot[1], quest_id=quest.id)
+        name = None
+        if not dot[0] == '':
+            name = dot[0][0]
+
+        new_dot = Dot(name=name, coor=dot[1], quest_id=quest.id)
         db.session.add(new_dot)
         db.session.commit()
 
@@ -140,6 +147,7 @@ def upload_pictures_for_dots():
     db.session.add(quest)
     db.session.commit()
 
+    filenames = []
     for file in request.files.getlist("pict[]"):
         # if user does not select file, browser also
         # submit a empty part without filename
@@ -149,11 +157,12 @@ def upload_pictures_for_dots():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filenames.append(filename)
 
-        for dot in quest.dots:
-            dot.picture = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            db.session.add(dot)
-            db.session.commit()
+    for i in range(len(quest.dots)):
+        quest.dots[i].picture = filenames[i]
+        db.session.add(quest.dots[i])
+        db.session.commit()
 
     return redirect("/")
 

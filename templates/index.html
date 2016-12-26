@@ -14,7 +14,7 @@
             <div class="col s12">
                 <div class="card hoverable {% if quest.done %} grey lighten-4 {% endif %}">
                     <div class="card-content">
-                        <span class="card-title">Назва квесту | 5.12 km</span>
+                        <span class="card-title">Квест | {{ quest.name }} km</span>
                         <div class="video-container">
                             <iframe width="600" height="450" frameborder="0" src="{{ quest.map_url }}"
                                     allowfullscreen></iframe>
@@ -44,9 +44,9 @@
                             </ul>
                         {% else %}
                             <div class="section row">
-                                {% for dot in  quest.dots %}
+                                {% for dot in quest.dots %}
                                     <div class="col s12 m6 l6">
-                                        <img src="{{ dot.picture }}" class="responsive-img" alt="">
+                                        <img src="{{ url_for('static', filename='uploads/dots/' + dot.picture) }}" class="responsive-img" alt="">
                                     </div>
                                 {% endfor %}
                             </div>

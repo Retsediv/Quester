@@ -14,13 +14,19 @@
             <div class="col s12">
                 <div class="card hoverable {% if quest.done %} grey lighten-4 {% endif %}">
                     <div class="card-content">
-                        <span class="card-title">Назва квесту | 5.12 km</span>
+                        <span class="card-title">Квест | {{ quest.name }} km
+
+                            <img width="45" src="{% if quest.transport == 'walking' %} http://downloadicons.net/sites/default/files/baby18-77407.png {% else %} http://www.free-icons-download.net/images/bicycle-symbol-icon-47218.png {% endif %}"
+                                 class="responsive-img right" alt="">
+                            <img width="45" src="{% if quest.type == 'cult' %} https://d30y9cdsu7xlg0.cloudfront.net/png/13644-200.png {% else %} https://cdn0.iconfinder.com/data/icons/sports-android-l-lollipop-icon-pack/24/hand_biceps-512.png {% endif %}"
+                                 class="responsive-img right" alt="">
+
+                        </span>
                         <div class="video-container">
                             <iframe width="600" height="450" frameborder="0" src="{{ quest.map_url }}"
                                     allowfullscreen></iframe>
                         </div>
-                        {#                        {{ quest.type }}<br>#}
-                        {#                        {{ quest.transport }}#}
+                    
                         {% if not quest.done %}
                             <form action="{{ url_for('upload_pictures_for_dots') }}" method="post"
                                   enctype="multipart/form-data">
@@ -44,9 +50,10 @@
                             </ul>
                         {% else %}
                             <div class="section row">
-                                {% for dot in  quest.dots %}
+                                {% for dot in quest.dots %}
                                     <div class="col s12 m6 l6">
-                                        <img src="{{ dot.picture }}" class="responsive-img" alt="">
+                                        <img src="{{ url_for('static', filename='uploads/dots/' + dot.picture) }}"
+                                             class="responsive-img" alt="">
                                     </div>
                                 {% endfor %}
                             </div>

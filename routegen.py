@@ -120,7 +120,7 @@ class Route:
                         self.way.append((','.join(point[:-2]), waypoint))
                         break
                 k += 1
-                if (k > 15):
+                if (k > 15) and (i > 0):
                     way = way[:-1]
                     i -= 1
                     break

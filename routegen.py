@@ -74,7 +74,7 @@ class Route:
             import os
             os.chdir(os.path.dirname(__file__))
 
-            data_file = open('dots' + os.sep + 'all_' + quest_mode + '.txt', encoding='utf-8', errors='ignore')
+            data_file = open('dots' + os.sep + 'all_' + quest_mode + '.txt', encoding='iso-8859-1', errors='ignore')
             for line in data_file:
                 line = line.strip()
                 waypoints.append(line.split(', '))
@@ -83,7 +83,7 @@ class Route:
 
         def geocode(location):
             from urllib.request import urlopen, quote
-            location = quote('вулиця ' + location + ', Львів, Львівська область')
+            location = quote(location + ', Львів, Львівська область')
             url = 'https://maps.googleapis.com/maps/api/geocode/json?address={}&key={}'.format(location, APIkey)
             print(url)
             f = urlopen(url)

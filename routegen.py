@@ -5,7 +5,7 @@ glminlen = 500
 
 
 class Route:
-    '''
+    '''modal
     Route.route is an url representing google map with route
     Route.way is list of str, same str as in all_cult.txt
     Route.way[0] ia a current location, start
@@ -32,6 +32,8 @@ class Route:
                 minlen = glminlen * 2
             else:
                 raise ValueError('Wrong travelling_mode!')
+            if (quest_mode == 'sport'):
+                maxlen *= 3
             url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&mode={2}&units=metric&key={3}'.format(
                 way[0], way[-1], travelling_mode, APIkey)
             print(url)
@@ -44,6 +46,8 @@ class Route:
                     line = response.readline()
                     line = response.readline().strip()
                     length += int(line[10:])
+            length /= 2
+            print(length)
             if (length < (maxlen / point_num) and length > (minlen / point_num)):
                 iscorrent = True
                 self.length += length
@@ -72,7 +76,7 @@ class Route:
             import os
             os.chdir(os.path.dirname(__file__))
 
-            data_file = open('dots' + os.sep + 'all_' + quest_mode + '.txt', encoding='utf-8', errors='ignore')
+            data_file = open('dots' + os.sep + 'all_' + quest_mode + '.txt', encoding='windows-1251', errors='ignore')
             for line in data_file:
                 line = line.strip()
                 waypoints.append(line.split(', '))
@@ -81,7 +85,7 @@ class Route:
 
         def geocode(location):
             from urllib.request import urlopen, quote
-            location = quote('вулиця ' + location + ', Львів, Львівська область')
+            location = quote(location + ', Львів, Львівська область')
             url = 'https://maps.googleapis.com/maps/api/geocode/json?address={}&key={}'.format(location, APIkey)
             print(url)
             f = urlopen(url)
@@ -107,18 +111,32 @@ class Route:
 
         point_num = randint(3, 6)
         print(point_num)
-        for i in range(point_num):
+        i = 0
+        while i < point_num:
+            k = 0
             while True:
                 point = choice(waypoints)
                 waypoint = convert_waypoint(point[-2:])
-                if ((abs(float(waypoint.split(',')[0]) - float(way[-1].split(',')[0])) < 0.015) and
-                        (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.015)):
+                try:
+                    if ((abs(float(waypoint.split(',')[0]) - float(way[-1].split(',')[0])) < 0.01) and
+                            (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.01)) or \
+                                    quest_mode == 'sport':
+                        if (check_length([way[-1], waypoint], point_num)):
+                            way.append(waypoint)
+                            self.way.append((','.join(point[:-2]), waypoint))
+                            break
+                except IndexError:
                     if (check_length([way[-1], waypoint], point_num)):
                         way.append(waypoint)
                         self.way.append((','.join(point[:-2]), waypoint))
                         break
+                k += 1
+                if (k > 15) and (i > 0):
+                    way = way[:-1]
+                    i -= 1
+                    break
+            i += 1
             waypoints.remove(point)
 
-        self.length /= 2
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
             way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)

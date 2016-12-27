@@ -32,6 +32,8 @@ class Route:
                 minlen = glminlen * 2
             else:
                 raise ValueError('Wrong travelling_mode!')
+            if (quest_mode == 'sport'):
+                maxlen *= 3
             url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&mode={2}&units=metric&key={3}'.format(
                 way[0], way[-1], travelling_mode, APIkey)
             print(url)
@@ -117,7 +119,8 @@ class Route:
                 waypoint = convert_waypoint(point[-2:])
                 try:
                     if ((abs(float(waypoint.split(',')[0]) - float(way[-1].split(',')[0])) < 0.01) and
-                            (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.01)):
+                            (abs(float(waypoint.split(',')[1])) - float(way[-1].split(',')[1]) < 0.01)) or \
+                                    quest_mode == 'sport':
                         if (check_length([way[-1], waypoint], point_num)):
                             way.append(waypoint)
                             self.way.append((','.join(point[:-2]), waypoint))

@@ -79,7 +79,7 @@ def load_user(id):
 @app.route('/')
 def index():
     if current_user.is_authenticated:
-        quests = current_user.quests
+        quests = sorted(current_user.quests, key=lambda quest: quest.done)
         # quests = Quest.query.filter(user_id=current_user.id).all()
         can_new = True
         for q in quests:
@@ -102,6 +102,7 @@ def about():
     return render_template("about.html")
 
 
+# add new quest
 @app.route("/quest", methods=["POST"])
 def make_quest():
     from routegen import Route
@@ -113,24 +114,27 @@ def make_quest():
     map_url = route.route
     dots = route.way
     length = route.length
+
+    # Data example
     # map_url = 'https://www.google.com/maps/embed/v1/directions?origin=49.834535,24.0181279&destination=49.841266,24.0646835&waypoints=49.84023999999999,24.033825|49.8341096,24.0297615|49.8155835,24.0372175|49.834257,24.009316|49.8387215,23.882707&mode=walking&key=AIzaSyB-cMjd8cn3CGD1btd1LVdRQodlYZWE7ZQ'
     # dots = [['Козельницька 2а', '49.33332,24.3333'], ['Городоцька', '46.3453,22.32423']]
+
     # add quest to db
     quest = Quest(name=str(length), type=type, transport=transport, map_url=map_url, user_id=current_user.id)
     db.session.add(quest)
     db.session.commit()
 
+    # add dots of this quest to db
     for dot in dots:
-        name = None
-        if not dot[0] == '':
-            name = dot[0][0]
+        name = 'Точка'
+        if '. ,.' not in dot[0]:
+            name = dot[0]
 
         new_dot = Dot(name=name, coor=dot[1], quest_id=quest.id)
         db.session.add(new_dot)
         db.session.commit()
 
     return redirect('/')
-    # return type + " " + transport + " " + start_street
 
 
 def allowed_file(filename):
@@ -138,6 +142,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# uploads images for quest dots
 @app.route('/quest/dot/img', methods=['POST', 'GET'])
 def upload_pictures_for_dots():
     import os

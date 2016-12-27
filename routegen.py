@@ -5,7 +5,7 @@ glminlen = 500
 
 
 class Route:
-    '''
+    '''modal
     Route.route is an url representing google map with route
     Route.way is list of str, same str as in all_cult.txt
     Route.way[0] ia a current location, start

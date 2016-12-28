@@ -47,6 +47,8 @@ class Route:
                     line = response.readline().strip()
                     length += int(line[10:])
             length /= 2
+            if (length == 0):
+                raise RuntimeError('API key not valid')
             print(length)
             if (length < (maxlen / point_num) and length > (minlen / point_num)):
                 iscorrent = True

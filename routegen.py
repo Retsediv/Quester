@@ -1,6 +1,6 @@
 APIkey = 'AIzaSyC1ZcZJ4jBfcg1Fm_qJtdY76AaxI-3ANjI'
 # length in meters
-glmaxlen = 10000
+glmaxlen = 5000
 glminlen = 500
 
 
@@ -50,7 +50,6 @@ class Route:
             print(length)
             if (length < (maxlen / point_num) and length > (minlen / point_num)):
                 iscorrent = True
-                self.length += length
             return iscorrent
 
         def convert_waypoint(waypoint):
@@ -140,3 +139,15 @@ class Route:
 
         self.route = 'https://www.google.com/maps/embed/v1/directions?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
             way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)
+
+        url = 'https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints={2}&mode={3}&key={4}'.format(
+            way[0], way[-1], '|'.join(way[1:-1]), travelling_mode, APIkey)
+        print(url)
+        response = urlopen(url)
+        for line in response:
+            line = line.strip()
+            if line.startswith(b'"distance"'):
+                line = response.readline()
+                line = response.readline().strip()
+                self.length += int(line[10:])
+        self.length /= 2

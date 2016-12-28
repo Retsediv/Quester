@@ -1,4 +1,4 @@
-APIkey = 'AIzaSyC1ZcZJ4jBfcg1Fm_qJtdY76AaxI-3ANjI'
+APIkey = 'AIzaSyBX0PuFsrKqNTiUIP3Bc5qVQ_vOtHFAvlI'
 # length in meters
 glmaxlen = 5000
 glminlen = 500

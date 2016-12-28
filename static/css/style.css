@@ -73,6 +73,11 @@ a.button-collapse {
     display: block;
 }
 
+.text_po_centru {
+    text-align: center;
+}
+
+
 .quest_map {
     width: 100% !important;
     min-height: 350px !important;

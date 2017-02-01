@@ -16,7 +16,7 @@ lm = LoginManager(app)
 
 lm.login_view = 'index'
 
-UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static' + os.sep + 'uploads' + os.sep + 'dots' + os.sep).replace("/root", "").replace("/Quester", "")
+UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static' + os.sep + 'uploads' + os.sep + 'dots' + os.sep)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app.config['SECRET_KEY'] = 'top secret!'

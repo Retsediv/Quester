@@ -1,4 +1,4 @@
-APIkey = 'AIzaSyC1ZcZJ4jBfcg1Fm_qJtdY76AaxI-3ANjI'
+APIkey = 'AIzaSyCxVVWSTu_Vj0xT34iOONMLImVdPajbWzs'
 # length in meters
 glmaxlen = 5000
 glminlen = 500
@@ -47,6 +47,8 @@ class Route:
                     line = response.readline().strip()
                     length += int(line[10:])
             length /= 2
+            if (length == 0):
+                raise RuntimeError('API key not valid')
             print(length)
             if (length < (maxlen / point_num) and length > (minlen / point_num)):
                 iscorrent = True
@@ -130,7 +132,7 @@ class Route:
                         self.way.append((','.join(point[:-2]), waypoint))
                         break
                 k += 1
-                if (k > 15) and (i > 0):
+                if (k > 15) and (i > 1):
                     way = way[:-1]
                     i -= 1
                     break

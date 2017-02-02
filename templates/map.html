@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Map</title>
     <style>
         #map {
             height: 600px;
@@ -26,14 +26,14 @@
     var map = L.map('map');
     // Read the GeoJSON data with jQuery, and create a circleMarker element for each tweet
     // Each tweet will be represented by a nice red dot
-    $.getJSON("./geo_data.json", function (data) {
+    $.getJSON("{{ url_for('static', filename='json/geo_data.json') }}", function (data) {
         var myStyle = {
-            radius: 2,
+            radius: 3,
             fillColor: "red",
             color: "red",
             weight: 1,
-            opacity: 1,
-            fillOpacity: 1
+            opacity: 0.35,
+            fillOpacity: 0.35
         };
 
         var geojson = L.geoJson(data, {

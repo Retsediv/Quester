@@ -1,3 +1,4 @@
+import sys
 import tweepy
 from tweepy import OAuthHandler
 
@@ -11,6 +12,8 @@ auth.set_access_token(access_token, access_secret)
 
 api = tweepy.API(auth)
 
-for status in tweepy.Cursor(api.home_timeline).items(10):
-    # Process a single status
-    print(status.text)
+# for place in api.geo_search(lat=49.8397, long=24.0297, accuracy=10000):
+# for place in tweepy.Cursor(api.search, count=1000, geocode="49.8397,24.0297,20km"):
+# for place in api.search(count=1000, geocode="49.8397,24.0297,20km"):
+#     # Process a single status
+#     print(place)
